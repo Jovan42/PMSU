@@ -14,27 +14,33 @@
     <TextView
         android:id="@+id/etPostTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Title"/>
     <TextView
         android:id="@+id/tvPostDesc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Description"/>
     <TextView
         android:id="@+id/tvPostAuthor"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Author"/>
     <TextView
         android:id="@+id/tvPostDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Date"/>
     <TextView
         android:id="@+id/tvPostLocation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Location"/>
     <TextView
         android:id="@+id/tvPostTags"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Tags"/>
     <LinearLayout
         android:id="@+id/postComments"
         android:layout_width="wrap_content"
@@ -48,10 +54,12 @@
         <TextView
             android:id="@+id/tvPostLikes"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Likes"/>
         <TextView
             android:id="@+id/tvPostDislikes"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Dislikes"/>
     </LinearLayout>
 </LinearLayout>
