@@ -5,5 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="jovan.sf62_2017.SettingsActivity">
+    <include layout="@layout/app_bar_layout"/>
 
+    <android.support.v4.widget.DrawerLayout
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <include layout="@layout/drawer_pane"/>
+    </android.support.v4.widget.DrawerLayout>
 </android.support.constraint.ConstraintLayout>
