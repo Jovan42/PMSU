@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:label="Login">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,16 +20,20 @@
         <activity
             android:name=".PostsActivity"
             android:label="Post"
+            android:theme="@style/NoActionBarTheme"
             />
         <activity
             android:name=".CreatePostActivity"
-            android:label="Create Post"/>
+            android:label="Create Post"
+            android:theme="@style/NoActionBarTheme"/>
         <activity
             android:name=".ReadPostActivity"
-            android:label="Read post"/>
+            android:label="Read post"
+            android:theme="@style/NoActionBarTheme"/>
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings" />
+            android:label="Settings"
+            android:theme="@style/NoActionBarTheme"/>
     </application>
 
 </manifest>

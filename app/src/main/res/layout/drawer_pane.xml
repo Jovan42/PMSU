@@ -19,7 +19,9 @@
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:src="@drawable/profile_default_icon"
+                android:contentDescription="@string/profile_picture"/>
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
@@ -27,12 +29,13 @@
                 <TextView
                     android:id="@+id/etUsername"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/user"/>
                 <Button
                     android:id="@+id/btnLogOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Log out"/>
+                    android:text="@string/log_out"/>
             </LinearLayout>
         </LinearLayout>
         <ListView

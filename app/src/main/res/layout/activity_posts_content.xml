@@ -8,15 +8,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnStartCreatePostActivity"
-            android:text="Create Post"/>
+            android:text="@string/create_post"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnStartReadPostActivity"
-            android:text="Read Post"/>
+            android:text="@string/read_post"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnSettingsActivity"
-            android:text="Settings"/>
+            android:text="@string/settings"/>
 </LinearLayout>

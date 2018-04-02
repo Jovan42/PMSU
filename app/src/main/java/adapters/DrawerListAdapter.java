@@ -1,7 +1,7 @@
 package adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import jovan.sf62_2017.R;
 
 public class DrawerListAdapter extends BaseAdapter {
-    Context mContext;
-    ArrayList<String> mNavItems;
+    private Context mContext;
+    private ArrayList<String> mNavItems;
 
     public DrawerListAdapter(Context context) {
         mContext = context;
@@ -38,16 +38,18 @@ public class DrawerListAdapter extends BaseAdapter {
         return 0;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         if(convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert inflater != null;
             view = inflater.inflate(R.layout.drawer_list_item, null);
         } else {
             view = convertView;
         }
-        TextView text = (TextView) view.findViewById(R.id.text);
+        TextView text = view.findViewById(R.id.text);
 
         text.setText(mNavItems.get(position));
         return view;

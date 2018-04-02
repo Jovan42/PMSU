@@ -7,43 +7,44 @@
     <ImageView
         android:id="@+id/imgPostPhoto"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/profile_picture" />
 
     <TextView
         android:id="@+id/etPostTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"/>
+        android:text="@string/title"/>
     <TextView
         android:id="@+id/tvPostDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Description"/>
+        android:text="@string/description"/>
     <TextView
         android:id="@+id/tvPostAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Author"/>
+        android:text="@string/author"/>
     <TextView
         android:id="@+id/tvPostDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"/>
+        android:text="@string/date"/>
     <TextView
         android:id="@+id/tvPostLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location"/>
+        android:text="@string/location"/>
     <TextView
         android:id="@+id/tvPostTags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tags"/>
+        android:text="@string/tags"/>
     <LinearLayout
         android:id="@+id/postComments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,11 +54,11 @@
             android:id="@+id/tvPostLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Likes"/>
+            android:text="@string/likes"/>
         <TextView
             android:id="@+id/tvPostDislikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dislikes"/>
+            android:text="@string/dislikes"/>
     </LinearLayout>
 </LinearLayout>

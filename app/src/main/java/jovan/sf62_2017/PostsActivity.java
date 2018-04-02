@@ -1,17 +1,15 @@
 package jovan.sf62_2017;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 
@@ -25,17 +23,16 @@ public class PostsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
 
-        
-        final CharSequence mDrawerTitle;
         final CharSequence mTitle;
-        mTitle = mDrawerTitle = getTitle();
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ListView mDrawerList = (ListView) findViewById(R.id.navList);
-        LinearLayout mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
+        mTitle = getTitle();
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawerLayout);
+        ListView mDrawerList = findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this);
 
         mDrawerList.setAdapter(adapter);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
@@ -53,17 +50,19 @@ public class PostsActivity extends AppCompatActivity {
                 R.string.pass  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-//                getActionBar().setTitle(mTitle);
                 getSupportActionBar().setTitle(mTitle);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_icon);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
 //                getActionBar().setTitle(mDrawerTitle);
-                getSupportActionBar().setTitle("iReviewer");
+                getSupportActionBar().setTitle("Project");
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_back_icon);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         (findViewById(R.id.btnStartCreatePostActivity)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,32 +85,32 @@ public class PostsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        return true;
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_settings) {
+            startActivity(new Intent(PostsActivity.this, SettingsActivity.class));
+        }
+        return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch (position) {
+                case 0:
+                    break;
+                case 1:
+                    startActivity(new Intent(PostsActivity.this, SettingsActivity.class));
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
