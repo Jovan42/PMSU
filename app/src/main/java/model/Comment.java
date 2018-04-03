@@ -11,10 +11,9 @@ public class Comment {
     private Post post;
     private int likes;
     private int dislikes;
-    private Status status;
 
     public Comment(int id, String title, String description, User author, Date date, Post post,
-                   int likes, int dislikes, Status status) {
+                   int likes, int dislikes) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -23,7 +22,6 @@ public class Comment {
         this.post = post;
         this.likes = likes;
         this.dislikes = dislikes;
-        this.status = status;
     }
 
     public int getId() {
@@ -90,11 +88,4 @@ public class Comment {
         this.dislikes = dislikes;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 }

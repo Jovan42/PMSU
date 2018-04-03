@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -72,6 +74,24 @@ public class ReadPostActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+        Post post = newPost();
+        String tags = "";
+        for (Tag tag : post.getTags()) {
+            tags += tag.toString() + " ";
+        }
+
+
+        ((TextView)findViewById(R.id.tvPostTitle)).setText(post.getTitle());
+        ((TextView)findViewById(R.id.tvPostDesc)).setText(post.getDescription());
+        ((TextView)findViewById(R.id.tvPostAuthor)).setText(post.getAuthor().getUsername());
+        ((TextView)findViewById(R.id.tvPostDate)).setText(post.getDate().toString());
+        ((TextView)findViewById(R.id.tvPostLocation)).setText(post.getLocation().toString());
+        ((TextView)findViewById(R.id.tvPostTags)).setText(tags);
+
+        ((TextView)findViewById(R.id.tvPostLikes)).setText(post.getLikes());
+
+        ((TextView)findViewById(R.id.tvPostDislikes)).setText(post.getDislikes());
+
 
     }
 
@@ -118,5 +138,9 @@ public class ReadPostActivity extends AppCompatActivity {
         Post post =  new Post(0, "Novi Post", "desc", null, user, new Date(),
                 new Location(""), new ArrayList<Tag>(), new ArrayList<Comment>(), 10, 10);
 
+        post.getComments().add(new Comment(0, "Komentar", "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim."
+                , user, new Date(), post, 15, 15));
+        post.getTags().add(new Tag(0, "Post", null));
+        return post;
     }
 }
