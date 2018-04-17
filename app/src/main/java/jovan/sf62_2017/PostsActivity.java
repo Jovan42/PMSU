@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 
 import adapters.DrawerListAdapter;
+import adapters.PostsListAdapter;
 
 public class PostsActivity extends AppCompatActivity {
 
@@ -22,6 +23,10 @@ public class PostsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
+
+        PostsListAdapter postsAdapter = new PostsListAdapter(this);
+        ListView postsList = findViewById(R.id.postsList);
+        postsList.setAdapter(postsAdapter);
 
         final CharSequence mTitle;
         mTitle = getTitle();
