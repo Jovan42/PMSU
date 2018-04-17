@@ -12,8 +12,9 @@
     <string name="date">Date</string>
     <string name="location">Location</string>
     <string name="tags">Tags</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="likes">150</string>
+    <string name="dislikes">250</string>
     <string name="profile_picture">Profile picture</string>
     <string name="log_out">Log out</string>
+    <string name="comments">Comments</string>
 </resources>

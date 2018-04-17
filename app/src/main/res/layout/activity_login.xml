@@ -4,9 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/dark_background"
     tools:context="jovan.sf62_2017.LoginActivity">
 
    <EditText
+       android:textColor="@color/white"
+       android:textColorHint="@color/hint"
        android:id="@+id/etUsername"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -15,6 +18,8 @@
        android:hint="@string/user"/>
 
    <EditText
+       android:textColor="@color/white"
+       android:textColorHint="@color/hint"
        android:id="@+id/etPassword"
        android:inputType="textPassword"
        android:layout_width="match_parent"

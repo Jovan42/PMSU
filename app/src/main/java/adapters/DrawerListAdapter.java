@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -52,6 +54,10 @@ public class DrawerListAdapter extends BaseAdapter {
         TextView text = view.findViewById(R.id.text);
 
         text.setText(mNavItems.get(position));
+        if(position == 1)
+            ((ImageView) view.findViewById(R.id.image)).setImageResource(R.drawable.settings_icon);
+        if(position == 0)
+            ((ImageView) view.findViewById(R.id.image)).setImageResource(R.drawable.list_icon);
         return view;
     }
 }

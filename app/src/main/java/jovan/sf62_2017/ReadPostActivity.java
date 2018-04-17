@@ -1,6 +1,10 @@
 package jovan.sf62_2017;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,14 +16,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import adapters.DrawerListAdapter;
 import model.Comment;
@@ -73,26 +81,38 @@ public class ReadPostActivity extends AppCompatActivity {
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        StringBuilder tags = new StringBuilder();
+        String location = "unknown";
 
-        Post post = newPost();
-        String tags = "";
-        for (Tag tag : post.getTags()) {
-            tags += tag.toString() + " ";
+        Post posts = newPost();
+        for (Tag tag: posts.getTags())
+            tags.append(tag.getName()).append(", ");
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(posts.getLocation().getLatitude(), posts.getLocation().getLongitude(), 1);
+            if(addresses.size() > 0 ) {
+                String city = addresses.get(0).getLocality();
+                String country = addresses.get(0).getCountryName();
+                location = city + ", " + country;
+            }
+        } catch (IOException e) {
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
-        ((TextView)findViewById(R.id.tvPostTitle)).setText(post.getTitle());
-        ((TextView)findViewById(R.id.tvPostDesc)).setText(post.getDescription());
-        ((TextView)findViewById(R.id.tvPostAuthor)).setText(post.getAuthor().getUsername());
-        ((TextView)findViewById(R.id.tvPostDate)).setText(post.getDate().toString());
-        ((TextView)findViewById(R.id.tvPostLocation)).setText(post.getLocation().toString());
-        ((TextView)findViewById(R.id.tvPostTags)).setText(tags);
-
-        ((TextView)findViewById(R.id.tvPostLikes)).setText(post.getLikes());
-
-        ((TextView)findViewById(R.id.tvPostDislikes)).setText(post.getDislikes());
-
-
+        ((TextView)findViewById(R.id.tvPostTitle)).setText(posts.getTitle());
+        ((TextView)findViewById(R.id.tvPostTags)).setText("Tags : " + tags);
+        ((TextView)findViewById(R.id.tvPostDesc)).setText(posts.getDescription());
+        ((TextView)findViewById(R.id.tvPostAuthor)).setText(posts.getAuthor().getName());
+        ((TextView)findViewById(R.id.tvPostDate)).setText(dateFormat.format(posts.getDate()));
+        ((TextView)findViewById(R.id.tvPostLocation)).setText(location);
+        ((TextView)findViewById(R.id.tvPostLikes)).setText(String.valueOf(posts.getLikes()));
+        ((TextView)findViewById(R.id.tvPostDislikes)).setText(String.valueOf(posts.getDislikes()));
+        ((ImageView)findViewById(R.id.ivPostPhoto)).setImageBitmap(posts.getPhoto());
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -130,13 +150,17 @@ public class ReadPostActivity extends AppCompatActivity {
     }
 
     private Post newPost() {
-        String desc = "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.";
+        String desc = "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.";
         User user = new User(0, "Marko", null, "Marko", "password123", null, null);
         Location location = new Location("");
-        location.setLatitude(0);
-        location.setLongitude(0);
-        Post post =  new Post(0, "Novi Post", "desc", null, user, new Date(),
-                new Location(""), new ArrayList<Tag>(), new ArrayList<Comment>(), 10, 10);
+        location.setLatitude(45.2671);
+        location.setLongitude(19.8335);
+        Bitmap photo = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.nyan_cat);
+
+
+        Post post =  new Post(0, "Novi Post", desc, photo, user, new Date(),
+                location, new ArrayList<Tag>(), new ArrayList<Comment>(), 10, 10);
 
         post.getComments().add(new Comment(0, "Komentar", "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim."
                 , user, new Date(), post, 15, 15));
