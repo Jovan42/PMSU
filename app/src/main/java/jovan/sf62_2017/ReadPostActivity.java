@@ -43,6 +43,7 @@ public class ReadPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_read_post);
 
         final CharSequence mTitle;
+        Intent intent = getIntent();
         mTitle  = getTitle();
         DrawerLayout mDrawerLayout = findViewById(R.id.drawerLayout);
         ListView mDrawerList =  findViewById(R.id.navList);
@@ -82,37 +83,24 @@ public class ReadPostActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         StringBuilder tags = new StringBuilder();
-        String location = "unknown";
 
         Post posts = newPost("1");
         for (Tag tag: posts.getTags())
             tags.append(tag.getName()).append(", ");
 
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
 
-        try {
-            addresses = geocoder.getFromLocation(posts.getLocation().getLatitude(), posts.getLocation().getLongitude(), 1);
-            if(addresses.size() > 0 ) {
-                String city = addresses.get(0).getLocality();
-                String country = addresses.get(0).getCountryName();
-                location = city + ", " + country;
-            }
-        } catch (IOException e) {
-        }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
-
-        ((TextView)findViewById(R.id.tvPostTitle)).setText(posts.getTitle());
+        ((TextView)findViewById(R.id.tvPostTitle)).setText(intent.getStringExtra("Title"));
         ((TextView)findViewById(R.id.tvPostTags)).setText("Tags : " + tags);
-        ((TextView)findViewById(R.id.tvPostDesc)).setText(posts.getDescription());
-        ((TextView)findViewById(R.id.tvPostAuthor)).setText(posts.getAuthor().getName());
-        ((TextView)findViewById(R.id.tvPostDate)).setText(dateFormat.format(posts.getDate()));
-        ((TextView)findViewById(R.id.tvPostLocation)).setText(location);
-        ((TextView)findViewById(R.id.tvPostLikes)).setText(String.valueOf(posts.getLikes()));
-        ((TextView)findViewById(R.id.tvPostDislikes)).setText(String.valueOf(posts.getDislikes()));
+        ((TextView)findViewById(R.id.tvPostDesc)).setText(intent.getStringExtra("Desc"));
+        ((TextView)findViewById(R.id.tvPostAuthor)).setText(intent.getStringExtra("Author"));
+        ((TextView)findViewById(R.id.tvPostDate)).setText(intent.getStringExtra("Dates"));
+        ((TextView)findViewById(R.id.tvPostLocation)).setText(intent.getStringExtra("Location"));
+        ((TextView)findViewById(R.id.tvPostLikes)).setText(String.valueOf(intent.getIntExtra("Likes", -1)));
+        ((TextView)findViewById(R.id.tvPostDislikes)).setText(String.valueOf(intent.getIntExtra("Dislikes", -1)));
         ((ImageView)findViewById(R.id.ivPostPhoto)).setImageBitmap(posts.getPhoto());
+
+
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

@@ -68,25 +68,6 @@ public class PostsActivity extends AppCompatActivity {
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-
-        (findViewById(R.id.btnStartCreatePostActivity)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(PostsActivity.this, CreatePostActivity.class));
-            }
-        });
-        (findViewById(R.id.btnStartReadPostActivity)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(PostsActivity.this, ReadPostActivity.class));
-            }
-        });
-        (findViewById(R.id.btnSettingsActivity)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(PostsActivity.this, SettingsActivity.class));
-            }
-        });
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
