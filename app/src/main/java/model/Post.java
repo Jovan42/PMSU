@@ -3,6 +3,7 @@ package model;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -121,4 +122,20 @@ public class Post {
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
     }
+
+    public static Comparator<Post> dateComparator = new Comparator<Post>() {
+        @Override
+        public int compare(Post p1, Post p2) {
+            return p1.getDate().compareTo(p2.getDate());
+        }
+    };
+
+    public static Comparator<Post> rateComparator = new Comparator<Post>() {
+        @Override
+        public int compare(Post p1, Post p2) {
+            Integer r1 = p1.getLikes() - p1.getDislikes();
+            Integer r2 = p2.getLikes() - p2.getDislikes();
+            return r1.compareTo(r2);
+        }
+    };
 }
