@@ -1,4 +1,4 @@
-package adapters;
+package jovan.sf62_2017.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

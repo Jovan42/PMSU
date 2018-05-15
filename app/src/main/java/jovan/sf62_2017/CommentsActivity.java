@@ -1,11 +1,8 @@
 package jovan.sf62_2017;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,29 +14,26 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import jovan.sf62_2017.adapters.CommentListAdapter;
 import jovan.sf62_2017.adapters.DrawerListAdapter;
 import jovan.sf62_2017.adapters.PostsListAdapter;
+import jovan.sf62_2017.model.Comment;
 import jovan.sf62_2017.model.Post;
-import jovan.sf62_2017.model.User;
 import jovan.sf62_2017.service.ServiceUtils;
 import jovan.sf62_2017.tools.ReusableObjects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostsActivity extends AppCompatActivity {
-
+public class CommentsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posts);
-
-        setPosts();
+        setContentView(R.layout.activity_comments);
         final CharSequence mTitle;
         mTitle = getTitle();
         DrawerLayout mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -47,7 +41,7 @@ public class PostsActivity extends AppCompatActivity {
         DrawerListAdapter adapter = new DrawerListAdapter(this);
 
         mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener(new CommentsActivity.DrawerItemClickListener());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,6 +55,9 @@ public class PostsActivity extends AppCompatActivity {
 
         mDrawerLayout.addDrawerListener(ReusableObjects.getCustomActionBar(mDrawerLayout,
                 toolbar, this, mTitle));
+
+        Integer id = getIntent().getIntExtra("post_id", -1);
+        setComments(id);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -70,7 +67,7 @@ public class PostsActivity extends AppCompatActivity {
                 case 0:
                     break;
                 case 1:
-                    startActivity(new Intent(PostsActivity.this, SettingsActivity.class));
+                    startActivity(new Intent(CommentsActivity.this, SettingsActivity.class));
 
                     break;
                 default:
@@ -78,6 +75,7 @@ public class PostsActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,21 +86,28 @@ public class PostsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_settings) {
-            startActivity(new Intent(PostsActivity.this, CreatePostActivity.class));
+            startActivity(new Intent(CommentsActivity.this, CreatePostActivity.class));
         }
         return true;
     }
-    
-    private void setPosts() {
-        Call<List<Post>> callPosts = ServiceUtils.service.getPost();
-        List<Post> posts = new ArrayList<>();
-        callPosts.enqueue(new Callback<List<Post>>() {
+
+    private void setComments(int id) {
+        Log.d("TAGG id", Integer.toString(id));
+        if (id == -1) return;
+        Call<List<Comment>> callPosts = ServiceUtils.service.getComment();
+        List<Comment> comments = new ArrayList<>();
+        callPosts.enqueue(new Callback<List<Comment>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
+            public void onResponse(@NonNull Call<List<Comment>> call, @NonNull Response<List<Comment>> response) {
                 if(response.body() != null) {
-                    PostsListAdapter postsAdapter = new PostsListAdapter(getApplicationContext(), response.body());
-                    ListView postsList = findViewById(R.id.postsList);
-                    postsList.setAdapter(postsAdapter);
+                    Log.d("TAGG", Integer.toString(response.body().size()));
+                    for (Comment com: response.body()) {
+                        if(com.getPost() == id) comments.add(com);
+                    }
+
+                    CommentListAdapter commentListAdapterAdapter = new CommentListAdapter(getApplicationContext(), comments);
+                    ListView commentsList = findViewById(R.id.commentsList);
+                    commentsList.setAdapter(commentListAdapterAdapter);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Wrong username and password",
@@ -111,7 +116,7 @@ public class PostsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Comment>> call, @NonNull Throwable t) {
                 Toast.makeText(getApplicationContext(), "Server error",
                         Toast.LENGTH_LONG).show();
             }

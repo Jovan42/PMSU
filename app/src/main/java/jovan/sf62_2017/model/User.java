@@ -1,4 +1,4 @@
-package model;
+package jovan.sf62_2017.model;
 
 import android.graphics.Bitmap;
 
@@ -22,6 +22,11 @@ public class User {
         this.password = password;
         this.posts = posts;
         this.comments = comments;
+    }
+
+    public  User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {

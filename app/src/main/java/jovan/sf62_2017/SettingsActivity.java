@@ -1,33 +1,22 @@
 package jovan.sf62_2017;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.preference.ListPreference;
-import android.preference.Preference;
 
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
 import android.widget.ListView;
 
-import java.util.Calendar;
-
-import adapters.DrawerListAdapter;
+import jovan.sf62_2017.adapters.DrawerListAdapter;
 import jovan.sf62_2017.fragments.SettingsFragment;
+import jovan.sf62_2017.tools.ReusableObjects;
 
 //Morao sam da vratim na AppCompatActivity zato sto  PreferenceActivity ne nasledjuje AppCompactActivity
 // i nema metode get i SupportActionBar.
@@ -75,27 +64,8 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                toolbar,  /* nav drawer image to replace 'Up' caret */
-                R.string.app_name,  /* "open drawer" description for accessibility */
-                R.string.pass  /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_icon);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-//                getActionBar().setTitle(mDrawerTitle);
-                getSupportActionBar().setTitle("Project");
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_back_icon);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(ReusableObjects.getCustomActionBar(mDrawerLayout,
+                toolbar, this, mTitle));
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

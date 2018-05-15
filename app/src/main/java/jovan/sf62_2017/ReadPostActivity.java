@@ -1,42 +1,47 @@
 package jovan.sf62_2017;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import adapters.DrawerListAdapter;
-import model.Comment;
-import model.Post;
-import model.Tag;
-import model.User;
+import jovan.sf62_2017.adapters.DrawerListAdapter;
+import jovan.sf62_2017.adapters.PostsListAdapter;
+import jovan.sf62_2017.model.Comment;
+import jovan.sf62_2017.model.Post;
+import jovan.sf62_2017.model.Tag;
+import jovan.sf62_2017.model.User;
+import jovan.sf62_2017.service.ServiceUtils;
+import jovan.sf62_2017.tools.ReusableObjects;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReadPostActivity extends AppCompatActivity {
 
+    Boolean editable = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,45 +67,26 @@ public class ReadPostActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                toolbar,
-                R.string.app_name,
-                R.string.pass
-        ) {
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_icon);
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle("Project");
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_bar_back_icon);
-                invalidateOptionsMenu();
-            }
-        };
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(ReusableObjects.getCustomActionBar(mDrawerLayout,
+                toolbar, this, mTitle));
         StringBuilder tags = new StringBuilder();
 
-        Post posts = newPost("1");
-        for (Tag tag: posts.getTags())
-            tags.append(tag.getName()).append(", ");
+        Integer id = intent.getIntExtra("post_id", -1);
+        SharedPreferences sp =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String loggedUser = sp.getString("logged_user", "");
 
+        setPost(id, loggedUser);
+        //((ImageView)findViewById(R.id.ivPostPhoto)).setImageBitmap(posts.getPhoto());
 
-
-        ((TextView)findViewById(R.id.tvPostTitle)).setText(intent.getStringExtra("Title"));
-        ((TextView)findViewById(R.id.tvPostTags)).setText("Tags : " + tags);
-        ((TextView)findViewById(R.id.tvPostDesc)).setText(intent.getStringExtra("Desc"));
-        ((TextView)findViewById(R.id.tvPostAuthor)).setText(intent.getStringExtra("Author"));
-        ((TextView)findViewById(R.id.tvPostDate)).setText(intent.getStringExtra("Dates"));
-        ((TextView)findViewById(R.id.tvPostLocation)).setText(intent.getStringExtra("Location"));
-        ((TextView)findViewById(R.id.tvPostLikes)).setText(String.valueOf(intent.getIntExtra("Likes", -1)));
-        ((TextView)findViewById(R.id.tvPostDislikes)).setText(String.valueOf(intent.getIntExtra("Dislikes", -1)));
-        ((ImageView)findViewById(R.id.ivPostPhoto)).setImageBitmap(posts.getPhoto());
-
-
+        findViewById(R.id.btnComments).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(id == -1) return;
+                Intent intent = new Intent(ReadPostActivity.this, CommentsActivity.class);
+                intent.putExtra("post_id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -126,7 +112,14 @@ public class ReadPostActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        if(editable) {
+            int menuItem_EditId = 5;
+            MenuItem edit_item = menu.add(0, menuItem_EditId, 0, R.string.edit);
+            edit_item.setIcon(R.drawable.edit_icon);
+            edit_item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
         return true;
+
     }
 
     @Override
@@ -134,25 +127,52 @@ public class ReadPostActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.action_settings) {
             startActivity(new Intent(ReadPostActivity.this, CreatePostActivity.class));
         }
+        if(item.getItemId() == 5) {
+            Intent intent = new Intent(ReadPostActivity.this, CreatePostActivity.class);
+            Integer id = getIntent().getIntExtra("post_id", -1);
+            intent.putExtra("post_id", id);
+            startActivity(intent);
+        }
         return true;
     }
+    private void setPost(int id, String loggedUser) {
+        if(id == -1) return;
+        Call<Post> callPosts = ServiceUtils.service.getPost(id);
 
-    private Post newPost(String id) {
-        String desc = "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu. Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim. No mea temporibus contentiones, latine blandit appetere per ex. Tota sonet invenire ius ne. Tempor prompta recteque sea eu.";
-        User user = new User(0, "User" + id, null, "User" + id, "password123", null, null);
-        Location location = new Location("");
-        location.setLatitude(45.2671);
-        location.setLongitude(19.8335);
-        Bitmap photo = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.nyan_cat);
+        callPosts.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
+                if(response.body() != null) {
+                    Post post = response.body();
+                    ((TextView)findViewById(R.id.tvPostTitle)).setText(post.getTitle());
+                    ((TextView)findViewById(R.id.tvPostTags)).setText("Tags : " + post.getTagIds().toString());
+                    ((TextView)findViewById(R.id.tvPostDesc)).setText(post.getDescription());
+                    ((TextView)findViewById(R.id.tvPostAuthor)).setText(post.getUser());
+                    ((TextView)findViewById(R.id.tvPostDate)).setText(post.getDate().toString());
+                    ((TextView)findViewById(R.id.tvPostLocation)).setText("Location");
+                    ((TextView)findViewById(R.id.tvPostLikes)).setText(String.valueOf(post.getLikes()));
+                    ((TextView)findViewById(R.id.tvPostDislikes)).setText(String.valueOf(post.getDislikes()));
+
+                    Log.d("TAGG", loggedUser);
+                    if(loggedUser != null && loggedUser.equals(post.getUser())) {
+                        editable = true;
+                        invalidateOptionsMenu();
+                    } else editable = false;
 
 
-        Post post =  new Post(0, "Post" + id, desc, photo, user, new Date(),
-                location, new ArrayList<Tag>(), new ArrayList<Comment>(), 10, 10);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Wrong username and password",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
 
-        post.getComments().add(new Comment(0, "Komentar" + id, "Lorem ipsum dolor sit amet, at mel causae partiendo, usu et splendide intellegat forensibus, fierent adipisci cu vim."
-                , user, new Date(), post, 15, 15));
-        post.getTags().add(new Tag(0, "Post", null));
-        return post;
+            @Override
+            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
+                Toast.makeText(getApplicationContext(), "Server error",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
 }
