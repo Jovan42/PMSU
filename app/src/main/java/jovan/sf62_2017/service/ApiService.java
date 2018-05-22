@@ -15,17 +15,13 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-/**
- * Created by jovan on 10-May-18.
- */
-
 public interface ApiService {
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
     @GET("tags/{id}")
-    Call<Tag> getTag(@Path("id") String id);
+    Call<Tag> getTag(@Path("id") Integer id);
     @GET("tags/")
     Call<List<Tag>> getTag();
     @POST("tags/")
@@ -57,7 +53,11 @@ public interface ApiService {
     @PUT("posts/")
     Call<Post> putPost(@Body Post user);
     @DELETE("posts/{id}")
-    Call<Post> deletePost(@Path("id") String id);
+    Call<Boolean> deletePost(@Path("id") Integer id);
+    @POST("posts/{id}/like")
+    Call<Integer> likePost(@Path("id") Integer id);
+    @POST("posts/{id}/dislike")
+    Call<Integer> dislikePost(@Path("id") Integer id);
 
     @GET("comments/{id}")
     Call<Comment> getComment(@Path("id") String id);
@@ -69,4 +69,10 @@ public interface ApiService {
     Call<Comment> putComment(@Body Comment comment);
     @DELETE("comments/{id}")
     Call<Boolean> deleteComment(@Path("id") String id);
+    @POST("comments/{id}/like")
+    Call<Integer> likeComment(@Path("id") Integer id);
+    @POST("comments/{id}/dislike")
+    Call<Integer> dislikeComment(@Path("id") Integer id);
+
+
 }

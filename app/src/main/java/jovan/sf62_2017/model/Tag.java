@@ -15,6 +15,7 @@ public class Tag {
     private String name;
     @SerializedName("posts")
     @Expose
+
     private List<Integer> posts = null;
 
     public Integer getId() {

@@ -1,15 +1,11 @@
 package jovan.sf62_2017;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,14 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 import jovan.sf62_2017.adapters.DrawerListAdapter;
 import jovan.sf62_2017.adapters.PostsListAdapter;
 import jovan.sf62_2017.model.Post;
-import jovan.sf62_2017.model.User;
 import jovan.sf62_2017.service.ServiceUtils;
 import jovan.sf62_2017.tools.ReusableObjects;
 import retrofit2.Call;
@@ -33,13 +26,12 @@ import retrofit2.Response;
 
 public class PostsActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
 
-        setPosts();
+
         final CharSequence mTitle;
         mTitle = getTitle();
         DrawerLayout mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -61,6 +53,12 @@ public class PostsActivity extends AppCompatActivity {
 
         mDrawerLayout.addDrawerListener(ReusableObjects.getCustomActionBar(mDrawerLayout,
                 toolbar, this, mTitle));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setPosts();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -95,7 +93,6 @@ public class PostsActivity extends AppCompatActivity {
     
     private void setPosts() {
         Call<List<Post>> callPosts = ServiceUtils.service.getPost();
-        List<Post> posts = new ArrayList<>();
         callPosts.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
@@ -112,7 +109,7 @@ public class PostsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
-                Toast.makeText(getApplicationContext(), "Server error",
+                Toast.makeText(getApplicationContext(), "Server errorsas",
                         Toast.LENGTH_LONG).show();
             }
         });

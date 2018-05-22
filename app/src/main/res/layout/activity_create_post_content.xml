@@ -4,34 +4,59 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/dark_background">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <EditText
         android:id="@+id/etPostTitle"
         android:textColor="@color/white"
         android:textColorHint="@color/hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title"/>
+        android:hint="@string/title"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chose_tags"
+        android:textSize="16sp"/>
+    <GridLayout
+        android:id="@+id/checkboxContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:columnCount="5"
+        android:rowCount="5">
+    </GridLayout>
     <EditText
         android:id="@+id/etDesc"
         android:textColor="@color/white"
         android:textColorHint="@color/hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description"/>
-    <Button
-        android:id="@+id/btnPostPhoto"
-        android:text="Add photo"
+        android:hint="@string/description"/>
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/btnPostAddTag"
-        android:text="Add Tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:layout_margin="10dp">
+        <ImageButton
+            android:background="@drawable/image_icon"
+            android:id="@+id/btnPostPhoto"
+            android:text="@string/add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="50dp"
+            android:contentDescription="@string/add_picture" />
+    </LinearLayout>
     <Button
         android:id="@+id/btnCreate"
-        android:text="Create"
+        android:text="@string/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -3,6 +3,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Comparator;
+import java.util.Date;
 
 public class Comment {
 
@@ -20,7 +21,7 @@ public class Comment {
     private String user;
     @SerializedName("date")
     @Expose
-    private String date;
+    private Date date;
     @SerializedName("post")
     @Expose
     private Integer post;
@@ -63,11 +64,11 @@ public class Comment {
         this.user = user;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -95,20 +96,12 @@ public class Comment {
         this.dislikes = dislikes;
     }
 
-    public static Comparator<Comment> dateComparator = new Comparator<Comment>() {
-        @Override
-        public int compare(Comment c1, Comment c2) {
-            return c1.getDate().compareTo(c2.getDate());
-        }
-    };
+    public static Comparator<Comment> dateComparator = (c1, c2) -> c1.getDate().compareTo(c2.getDate());
 
-    public static Comparator<Comment> rateComparator = new Comparator<Comment>() {
-        @Override
-        public int compare(Comment p1, Comment p2) {
-            Integer r1 = p1.getLikes() - p1.getDislikes();
-            Integer r2 = p2.getLikes() - p2.getDislikes();
-            return r1.compareTo(r2);
-        }
+    public static Comparator<Comment> rateComparator = (p1, p2) -> {
+        Integer r1 = p1.getLikes() - p1.getDislikes();
+        Integer r2 = p2.getLikes() - p2.getDislikes();
+        return r1.compareTo(r2);
     };
 
 }

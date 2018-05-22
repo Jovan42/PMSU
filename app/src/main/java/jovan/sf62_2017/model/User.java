@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import java.util.List;
 
 public class User {
+    //TODO: JSON to POJO
+
     private int id;
     private String name;
     private Bitmap photo;
@@ -12,17 +14,6 @@ public class User {
     private String password;
     private List<Post> posts;
     private List<Comment> comments;
-
-    public User(int id, String name, Bitmap photo, String username, String password,
-                List<Post> posts, List<Comment> comments) {
-        this.id = id;
-        this.name = name;
-        this.photo = photo;
-        this.username = username;
-        this.password = password;
-        this.posts = posts;
-        this.comments = comments;
-    }
 
     public  User(String username, String password) {
         this.username = username;

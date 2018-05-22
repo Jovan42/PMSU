@@ -56,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
     private Preference.OnPreferenceChangeListener listener = (preference, newValue) -> {
         if (preference instanceof ListPreference) {
             findPreference(preference.getKey()).setSummary(newValue.toString());
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             //sharedPreferences.edit().putString(preference.getKey(),newValue.toString()).commit();
 
             //preference.setSummary(value);

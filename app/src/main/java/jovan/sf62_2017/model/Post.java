@@ -1,5 +1,6 @@
 package jovan.sf62_2017.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -85,12 +86,13 @@ public class Post {
         this.user = user;
     }
 
-    public Date getDate() {
-        return date;
+    public String getDate() {
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+        return dt1.format(date);
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.date  = date;
     }
 
     public Double getLocationLong() {
@@ -133,6 +135,34 @@ public class Post {
         this.tagIds = tagIds;
     }
 
+    /* public List<Integer> getTagIds() {
+       List<Integer> ids = new ArrayList<>();
+        for (Tag tag:tagIds) {
+            ids.add(tag.getId());
+        }
+        return ids;
+    }
+
+    public void setTagIds(List<Integer> tagIds) {
+        Call<List<Tag>> tagsCall = ServiceUtils.service.getTag();
+        this.tagIds = new ArrayList<>();
+        ArrayList<Tag> tmp = new ArrayList<>();
+        tagsCall.enqueue(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                if (response.body() != null) {
+                    tmp.addAll(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Tag>> call, Throwable t) {
+                Log.d("TAG", "onFailure: ");
+            }
+        });
+        this.tagIds = tmp;
+    }*/
+
     public List<Integer> getCommentIds() {
         return commentIds;
     }
@@ -141,20 +171,14 @@ public class Post {
         this.commentIds = commentIds;
     }
 
-    public static Comparator<Post> dateComparator = new Comparator<Post>() {
-        @Override
-        public int compare(Post p1, Post p2) {
-            return p1.getDate().compareTo(p2.getDate());
-        }
+    public static Comparator<Post> dateComparator = (p1, p2) -> p1.getDate().compareTo(p2.getDate());
+
+    public static Comparator<Post> rateComparator = (p1, p2) -> {
+        Integer r1 = p1.getLikes() - p1.getDislikes();
+        Integer r2 = p2.getLikes() - p2.getDislikes();
+        return r1.compareTo(r2);
     };
 
-    public static Comparator<Post> rateComparator = new Comparator<Post>() {
-        @Override
-        public int compare(Post p1, Post p2) {
-            Integer r1 = p1.getLikes() - p1.getDislikes();
-            Integer r2 = p2.getLikes() - p2.getDislikes();
-            return r1.compareTo(r2);
-        }
-    };
+
 
 }

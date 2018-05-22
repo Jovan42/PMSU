@@ -101,10 +101,14 @@
             android:layout_alignEnd="@id/btnComments"
             android:layout_below="@+id/btnComments"
             android:orientation="horizontal">
-            <ImageView
+            <ImageButton
+                android:id="@+id/btnLike"
+                android:background="@color/dark_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
                 android:src="@drawable/like_icon" />
             <TextView
                 android:id="@+id/tvPostLikes"
@@ -114,10 +118,14 @@
                 android:text="@string/likes"
                 android:textColor="@color/white" />
 
-            <ImageView
+            <ImageButton
+                android:id="@+id/btnDislike"
+                android:background="@color/dark_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
                 android:src="@drawable/dislike_icon" />
 
             <TextView
