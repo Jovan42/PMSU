@@ -1,15 +1,24 @@
 package jovan.sf62_2017;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +37,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,6 +59,10 @@ import retrofit2.Response;
 
 public class CreatePostActivity extends AppCompatActivity {
     String uri = "";
+    Double lat = 0d, lng = 0d;
+    LocationManager locationManager;
+    LocationListener locationListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +75,11 @@ public class CreatePostActivity extends AppCompatActivity {
         DrawerListAdapter adapter = new DrawerListAdapter(this);
 
         Integer postId = getIntent().getIntExtra("post_id", -1);
-        if(postId != -1) {
+        if (postId != -1) {
 
             (findViewById(R.id.etPostTitle)).setEnabled(false);
             (findViewById(R.id.etDesc)).setEnabled(false);
-            ((Button)findViewById(R.id.btnCreate)).setText(R.string.edit);
+            ((Button) findViewById(R.id.btnCreate)).setText(R.string.edit);
             setPost(postId);
         } else setTags(null);
 
@@ -80,6 +98,18 @@ public class CreatePostActivity extends AppCompatActivity {
 
         mDrawerLayout.addDrawerListener(ReusableObjects.getCustomActionBar(mDrawerLayout,
                 toolbar, this, mTitle));
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(this,"Please turn on location",Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(myIntent);
+
+        } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            getLocation();
+        }
+
+
         (findViewById(R.id.btnCreate)).setOnClickListener(v -> createPost());
         findViewById(R.id.btnPostPhoto).setOnClickListener(v -> takePicture());
     }
@@ -113,8 +143,8 @@ public class CreatePostActivity extends AppCompatActivity {
                     setTags(post.getTagIds());
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Wrong username and password",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Wrong username and password",
+                     //       Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -127,6 +157,7 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void createPost() {
+
         String title = ((EditText) findViewById(R.id.etPostTitle)).getText().toString();
         String desc = ((EditText) findViewById(R.id.etDesc)).getText().toString();
         SharedPreferences sp =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -145,6 +176,8 @@ public class CreatePostActivity extends AppCompatActivity {
             post.setCommentIds(new ArrayList<>());
             post.setPhotoUrl(uri);
             post.setTagIds(getTags());
+            post.setLocationLat(lat);
+            post.setLocationLong(lng);
             Call<Post> callPosts = ServiceUtils.service.postPost(post);
             callPosts.enqueue(new Callback<Post>() {
                 @Override
@@ -157,8 +190,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "Wrong username and password",
-                                Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Wrong username and password",
+                        //        Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -193,8 +226,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                                 }
                                 else {
-                                    Toast.makeText(getApplicationContext(), "Wrong username and password",
-                                            Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), "Wrong username and password",
+                                    //        Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(getApplicationContext(), PostsActivity.class));
                                     finish();
                                 }
@@ -208,8 +241,8 @@ public class CreatePostActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "Wrong username and password",
-                                Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Wrong username and password",
+                        //        Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -300,8 +333,8 @@ public class CreatePostActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Wrong username and password",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Wrong username and password",
+                    //        Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -323,5 +356,95 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         return  tags;
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            // permission was granted, yay! Do the
+            // location-related task you need to do.
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // GPS location can be null if GPS is switched off
+                                if (location != null) {
+                                    lat = location.getLatitude();
+                                    lng = location.getLongitude();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                                e.printStackTrace();
+                            }
+                        });
+            }
+
+        } else {
+
+            // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+
+        }
+        return;
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (CreatePostActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+                String latitude = String.valueOf(lat);
+                String  longitude= String.valueOf(lng);
+
+                Toast.makeText(getApplicationContext(), latitude + "; " + longitude, Toast.LENGTH_LONG).show();
+
+            } else  if (location1 != null) {
+                 lat = location1.getLatitude();
+                lng = location1.getLongitude();
+                String latitude = String.valueOf(lat);
+                String longitude = String.valueOf(lng);
+
+                Toast.makeText(getApplicationContext(), latitude + "; " + longitude, Toast.LENGTH_LONG).show();
+
+
+            } else  if (location2 != null) {
+                lat = location2.getLatitude();
+                lng = location2.getLongitude();
+                String latitude = String.valueOf(lat);
+                String longitude = String.valueOf(lng);
+
+                Toast.makeText(getApplicationContext(), latitude + "; " + longitude, Toast.LENGTH_LONG).show();
+
+            }else{
+
+                Toast.makeText(this,"Unble to Trace your location",Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
 }

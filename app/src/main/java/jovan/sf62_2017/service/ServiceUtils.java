@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceUtils {
 
     //EXAMPLE: http://192.168.43.73:8080/rs.ftn.reviewer.rest/rest/proizvodi/
-    private static final String SERVICE_API_PATH = "http://192.168.1.6:8080/api/";
+    private static final String SERVICE_API_PATH = "http://a30ee92d.ngrok.io/api/";
 
     public static OkHttpClient test(){
         return new OkHttpClient.Builder()

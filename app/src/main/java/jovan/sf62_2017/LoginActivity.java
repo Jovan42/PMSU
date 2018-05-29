@@ -1,8 +1,11 @@
 package jovan.sf62_2017;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,17 +32,27 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
 
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+        if(!gps_enabled) {
+            Toast.makeText(this,"Please turn on location",Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(myIntent);
+        }
         (findViewById(R.id.btnLogIn)).setOnClickListener(v -> logIn());
     }
 
     private void logIn() {
-//        startActivity(new Intent(LoginActivity.this, PostsActivity.class));
-//        SharedPreferences sp1 =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        sp1.edit().putString("logged_user", "b").apply();
-//        finish();
+        startActivity(new Intent(LoginActivity.this, PostsActivity.class));
+        SharedPreferences sp1 =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sp1.edit().putString("logged_user", "b").apply();
+        finish();
 
-        final String userName = ((EditText)findViewById(R.id.etUsername)).getText().toString();
+        /*final String userName = ((EditText)findViewById(R.id.etUsername)).getText().toString();
         String password = ((EditText)findViewById(R.id.etPassword)).getText().toString();
 
         Call<Boolean> listCall= ServiceUtils.service.logInUser(new User(userName, password));
@@ -66,6 +79,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Server error",
                         Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
     }
 }
